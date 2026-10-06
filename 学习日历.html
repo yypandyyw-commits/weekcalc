@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>周数计算器</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .item {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    input {
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 8px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #semester {
+      margin-top: 10px;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 24px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>周数计算器</h1>
+
+  <!-- 基准日期 -->
+  <div class="item">
+    <label>第 1 周周一：</label>
+
+    <input
+      type="date"
+      id="originalDate"
+      value="2026-08-31"
+    >
+
+    <div id="semester"></div>
+  </div>
+
+
+  <!-- 查询日期 -->
+  <div class="item">
+    <label>请输入要查询的日期：</label>
+
+    <input
+      type="date"
+      id="dateInput"
+    >
+
+    <br>
+
+    <button onclick="calculate()">计算</button>
+  </div>
+
+
+  <!-- 计算结果 -->
+  <div id="result"></div>
+
+
+  <script>
+
+    // 获取页面元素
+    const originalDateInput = document.querySelector('#originalDate');
+    const dateInput = document.querySelector('#dateInput');
+    const semester = document.querySelector('#semester');
+    const result = document.querySelector('#result');
+
+
+    // 更新“第1周周一”的文字
+    function updateOriginalDate() {
+      semester.innerText =
+        `${originalDateInput.value} 是第 1 周周一`;
+    }
+
+
+    // 页面刚打开时先执行一次
+    updateOriginalDate();
+
+
+    // 用户修改基准日期时，实时更新文字
+    originalDateInput.addEventListener('change', updateOriginalDate);
+
+
+    // 计算第几周周几
+    function calculate() {
+
+      // 获取基准日期
+      const originalDate = new Date(originalDateInput.value);
+
+      // 获取用户输入的日期
+      const inputDate = new Date(dateInput.value);
+
+
+      // 判断用户有没有输入日期
+      if (!dateInput.value) {
+        result.innerText = '请先选择要查询的日期';
+        return;
+      }
+
+
+      // 计算两个日期相差多少天
+      const timeDifference =
+        inputDate.getTime() - originalDate.getTime();
+
+      const daysDifference =
+        timeDifference / (1000 * 60 * 60 * 24);
+
+
+      // 如果查询日期早于基准日期
+      if (daysDifference < 0) {
+        result.innerText = '查询日期早于第 1 周，暂时无法计算';
+        return;
+      }
+
+
+      // 计算第几周
+      const week =
+        Math.floor(daysDifference / 7) + 1;
+
+
+      // 计算星期几
+      const weekDays = [
+        '周一',
+        '周二',
+        '周三',
+        '周四',
+        '周五',
+        '周六',
+        '周日'
+      ];
+
+      const dayOfWeek =
+        Math.floor(daysDifference % 7);
+
+
+      // 输出结果
+      result.innerText =
+        `第 ${week} 周 · ${weekDays[dayOfWeek]}`;
+    }
+
+  </script>
+
+</body>
+
+</html>
